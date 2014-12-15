@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+
+<container xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://symfony.com/schema/dic/services" xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="aop.transactional_pointcut" class="AppBundle\Aop\TransactionalPointcut">
+            <argument type="service" id="annotation_reader"/>
+            <tag name="jms_aop.pointcut" interceptor="aop.transactional_interceptor"/>
+        </service>
+
+        <service id="aop.transactional_interceptor" class="AppBundle\Aop\TransactionalInterceptor">
+            <argument type="service" id="doctrine.orm.entity_manager"/>
+        </service>
+
+        <service id="repository.sprint" factory-service="doctrine.orm.entity_manager" factory-method="getRepository" class="AppBundle\Repository\SprintRepositoryDoctrine">
+            <argument>Domain\Model\Sprint\Sprint</argument>
+        </service>
+        <service id="service.sprint" class="Application\Impl\SprintServiceImpl">
+            <call method="setSprintRepository">
+                <argument type="service" id="repository.sprint"/>
+            </call>
+        </service>
+
+        <service id="facade.service.sprint" class="Interfaces\Sprint\Internal\SprintServiceFacadeImpl">
+            <call method="setSprintService">
+                <argument type="service" id="service.sprint"/>
+            </call>
+        </service>
+    </services>
+</container>

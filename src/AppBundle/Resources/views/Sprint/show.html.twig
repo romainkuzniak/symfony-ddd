@@ -1,0 +1,14 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h1>SPRINT {{ sprint.id }}</h1>
+    <h2>Status : {{ sprint.status }}</h2>
+    <h2>Creation date : {{ sprint.createdAt | localizeddate }}</h2>
+    <h2>Expected closed date : {{ sprint.expectedClosedAt |localizeddate }}</h2>
+    {% if sprint.effectiveClosedAt is not empty %}
+        <h2>Effective closed date : {{ sprint.effectiveClosedAt |localizeddate }}</h2>
+    {% endif %}
+
+    <form action="{{ path('close_sprint', {'id': sprint.id}) }}" method="post">
+        <input type="submit" value="Close"/>
+    </form>
+{% endblock %}
